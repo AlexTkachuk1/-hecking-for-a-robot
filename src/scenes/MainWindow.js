@@ -5,11 +5,15 @@ export class MainWindow extends Phaser.Scene {
 
     create() {
         this.togglePageVisibility(false);
-
         this.createElement();
     }
 
     createElement() {
 
+    }
+
+    togglePageVisibility(bool) {
+        this.scene[bool ? "wake" : "sleep"]();
+        this.scene.setVisible(bool);
     }
 }

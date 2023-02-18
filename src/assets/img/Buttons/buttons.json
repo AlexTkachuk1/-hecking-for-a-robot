@@ -1,0 +1,83 @@
+{
+	"textures": [
+		{
+			"image": "buttons-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1407,
+				"h": 332
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Base",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 1274,
+						"h": 371
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 22,
+						"w": 1234,
+						"h": 330
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1234,
+						"h": 330
+					}
+				},
+				{
+					"filename": "Checked",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 169,
+						"h": 118
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 169,
+						"h": 118
+					},
+					"frame": {
+						"x": 1237,
+						"y": 1,
+						"w": 169,
+						"h": 118
+					}
+				},
+				{
+					"filename": "CheckBox",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 108,
+						"h": 108
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 108,
+						"h": 108
+					},
+					"frame": {
+						"x": 1237,
+						"y": 121,
+						"w": 108,
+						"h": 108
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:b8bfae6567f0c84598bd2ffa1d543f18:ad6c6061cbe1acaace32b0be07d53951:c1b25c2ff05913e016f09b5f776b9a9b$"
+	}
+}

@@ -2,11 +2,12 @@ import Phaser, { Scale } from 'phaser';
 import { BeforeLoad } from "./scenes/BeforeLoad";
 import { MainWindow } from "./scenes/MainWindow";
 import { Loader } from "./scenes/Loader";
-import { gameSize } from "./scenes/constants/gameConstants";
+import { gameSize } from "./scenes/constants/GameConstants";
 
 const config = {
     type: Phaser.AUTO,
     parent: 'GardenSlots',
+    backgroundColor: '#ffffff',
     scale: {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH,
