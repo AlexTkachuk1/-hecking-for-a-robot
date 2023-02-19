@@ -1,6 +1,5 @@
 import { loadAssets } from "./constants/GameConstants";
 import { BeforeLoadConfig } from "./constants/Configs/BeforeLoadConfig";
-import { LoadConfig } from "./constants/Configs/LoadConfig";
 import { game } from "..";
 
 export class Loader extends Phaser.Scene {

@@ -33,6 +33,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "linq": "^4.0.1",
     "phaser": "^3.55.2"
   }
 }
