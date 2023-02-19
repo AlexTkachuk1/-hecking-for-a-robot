@@ -14,16 +14,112 @@ export class MainWindow extends Phaser.Scene {
     createElement() {
         const maze = this.generateMaze(15, 15);
         const startPoint = this.getStartPoint(maze);
+        this.currentHeroPoisition = startPoint;
         const mazeWhithFinish = this.addFinishPoint(maze, 15, 15);
         this.mazeRenderer(mazeWhithFinish);
         this.heroRenderer(startPoint);
+        this.inputHandler(mazeWhithFinish);
+        this.createGameTimer();
     }
 
-    heroRenderer(startPoint) {
+    inputHandler(maze) {
+        this.input.keyboard.on('keydown-W', () => {
+            let directionVector2 = this.getDirection();
+            directionVector2.y -= 1;
+            this.getNewHeroPosition(directionVector2, maze);
+            this.heroRenderer();
+        });
+        this.input.keyboard.on('keydown-A', () => {
+            let directionVector2 = this.getDirection();
+            directionVector2.x -= 1;
+            this.getNewHeroPosition(directionVector2, maze);
+            this.heroRenderer();
+        });
+        this.input.keyboard.on('keydown-S', () => {
+            let directionVector2 = this.getDirection();
+            directionVector2.y += 1;
+            this.getNewHeroPosition(directionVector2, maze);
+            this.heroRenderer();
+        });
+        this.input.keyboard.on('keydown-D', () => {
+            let directionVector2 = this.getDirection();
+            directionVector2.x += 1;
+            this.getNewHeroPosition(directionVector2, maze);
+            this.heroRenderer();
+        });
+    }
+
+    disableInputHandler() {
+        this.input.keyboard.off('keydown-W');
+        this.input.keyboard.off('keydown-A');
+        this.input.keyboard.off('keydown-S');
+        this.input.keyboard.off('keydown-D');
+    }
+
+    getDirection() {
+        return {
+            x: 0,
+            y: 0
+        };
+    }
+
+    getNewHeroPosition(directionVector2, maze) {
+        const newHeroPosition = {
+            x: this.currentHeroPoisition.x + directionVector2.x,
+            y: this.currentHeroPoisition.y + directionVector2.y
+        }
+
+        const targetCell = Enumerable.from(maze)
+            .singleOrDefault(x => x.x == newHeroPosition.x && x.y == newHeroPosition.y && x.type !== "Wall");
+
+        if (targetCell)
+            this.currentHeroPoisition = targetCell;
+
+        if (this.isAWin()) this.renderWinState();
+    }
+
+    heroRenderer() {
         const conf = MazeRendererConfig.Cells;
-        const x = conf.Hero.x + conf.with * startPoint.x;
-        const y = conf.Hero.y + conf.height * startPoint.y;
-        const cellImg = this.make.image(conf.Hero, true).setX(x).setY(y);
+        const x = conf.Hero.x + conf.with * this.currentHeroPoisition.x;
+        const y = conf.Hero.y + conf.height * this.currentHeroPoisition.y;
+
+        if (!this.hero) {
+            this.hero = this.make.image(conf.Hero, true).setX(x).setY(y);
+        }
+        else {
+            this.hero.setX(x).setY(y);
+        }
+    }
+
+    isAWin() {
+        return this.currentHeroPoisition.x == this.FinishPosition.x && this.currentHeroPoisition.y == this.FinishPosition.y;
+    }
+
+    renderWinState() {
+        this.make.text(MazeRendererConfig.WinText).setFontSize(MazeRendererConfig.WinText.fontSize);
+        this.timer.remove();
+        this.disableInputHandler();
+    }
+
+    createGameTimer() {
+        this.make.text(MazeRendererConfig.TimerText).setFontSize(MazeRendererConfig.TimerText.fontSize);
+        const timeLeft = this.make.text(MazeRendererConfig.TimerValueText).setFontSize(MazeRendererConfig.TimerValueText.fontSize);
+        this.timer = this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                timeLeft.setText(Number(timeLeft.text) - 1);
+                if (Number(timeLeft.text) <= 0) {
+                    this.renderLossState();
+                    this.timer.remove();
+                }
+            },
+            loop: true
+        });
+    }
+
+    renderLossState() {
+        this.make.text(MazeRendererConfig.LossText).setFontSize(MazeRendererConfig.LossText.fontSize);
+        this.disableInputHandler();
     }
 
     mazeRenderer(cellsList) {
@@ -57,6 +153,8 @@ export class MainWindow extends Phaser.Scene {
         if (!targetCell) {
             targetCell = this.getNearestCellByXY(cell, maze, "Grass1", "Wall");
         }
+
+        this.FinishPosition = targetCell;
 
         this.replaceCell(targetCell, "Flag", maze);
         return maze;
