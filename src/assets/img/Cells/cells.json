@@ -4,13 +4,13 @@
 			"image": "cells-0.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 48,
+				"w": 71,
 				"h": 12
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "Grass1",
+					"filename": "Flag",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -31,7 +31,7 @@
 					}
 				},
 				{
-					"filename": "Grass2",
+					"filename": "Grass1",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -52,7 +52,7 @@
 					}
 				},
 				{
-					"filename": "Grass3",
+					"filename": "Grass2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -73,7 +73,7 @@
 					}
 				},
 				{
-					"filename": "Wall",
+					"filename": "Grass3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -92,6 +92,48 @@
 						"w": 10,
 						"h": 10
 					}
+				},
+				{
+					"filename": "Wall",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 10,
+						"h": 10
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 10,
+						"h": 10
+					},
+					"frame": {
+						"x": 49,
+						"y": 1,
+						"w": 10,
+						"h": 10
+					}
+				},
+				{
+					"filename": "Hero1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 10,
+						"h": 10
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 9,
+						"h": 10
+					},
+					"frame": {
+						"x": 61,
+						"y": 1,
+						"w": 9,
+						"h": 10
+					}
 				}
 			]
 		}
@@ -99,6 +141,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:28cb7f5e17eb3aada2f7d69928415647:4f59e74c3569de9a6dbfb2c48f239de8:bb2dc3db0d6f55314cfe9e1c832c402e$"
+		"smartupdate": "$TexturePacker:SmartUpdate:c8d28406ce3aac34fe0d0b7547360777:20b60b416ed9326618e9c22302162386:bb2dc3db0d6f55314cfe9e1c832c402e$"
 	}
 }

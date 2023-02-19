@@ -36,6 +36,14 @@ export const MazeRendererConfig = {
             origin: 1,
             scale: 10
         },
+        Flag: {
+            x: 360,
+            y: 360,
+            key: loadAssets.Cells.key,
+            frame: "Flag",
+            origin: 1,
+            scale: 10
+        },
         Hero: {
             x: 360,
             y: 360,

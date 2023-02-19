@@ -13,7 +13,53 @@ export class MainWindow extends Phaser.Scene {
 
     createElement() {
         const maze = this.generateMaze(15, 15);
-        this.mazeRenderer(maze);
+        const startPoint = this.getStartPoint(maze);
+        const mazeWhithFinish = this.addFinishPoint(maze, 15, 15);
+        this.mazeRenderer(mazeWhithFinish);
+        this.heroRenderer(startPoint);
+    }
+
+    heroRenderer(startPoint) {
+        const conf = MazeRendererConfig.Cells;
+        const x = conf.Hero.x + conf.with * startPoint.x;
+        const y = conf.Hero.y + conf.height * startPoint.y;
+        const cellImg = this.make.image(conf.Hero, true).setX(x).setY(y);
+    }
+
+    mazeRenderer(cellsList) {
+        cellsList.forEach(cell => {
+            const conf = MazeRendererConfig.Cells;
+            const x = conf[cell.type].x + conf.with * cell.x;
+            const y = conf[cell.type].y + conf.height * cell.y;
+            const cellImg = this.make.image(conf[cell.type], true).setX(x).setY(y);
+        });
+    }
+
+    getStartPoint(maze) {
+        const cell = {
+            x: 0,
+            y: 0,
+            type: "Wall"
+        }
+        const targetCell = this.getNearestCellByXY(cell, maze, "Grass1", "Wall");
+        return targetCell;
+    }
+
+    addFinishPoint(maze, columns, rows) {
+        let targetCell;
+        const cell = {
+            x: columns - 2,
+            y: rows - 2,
+            type: "Grass1"
+        }
+        targetCell = Enumerable.from(maze).singleOrDefault(x => JSON.stringify(x) == JSON.stringify(cell));
+
+        if (!targetCell) {
+            targetCell = this.getNearestCellByXY(cell, maze, "Grass1", "Wall");
+        }
+
+        this.replaceCell(targetCell, "Flag", maze);
+        return maze;
     }
 
     generateMaze(columns, rows) {
@@ -48,13 +94,11 @@ export class MainWindow extends Phaser.Scene {
         while (openCellsList.length > 0) {
             const rundIndex = Math.floor(Math.random() * openCellsList.length);
             const rundOpenCell = openCellsList[rundIndex];
-            console.log(openCellsList.length);
             this.deleteCellFromList(rundOpenCell, openCellsList);
-            let nearestWallCells = this.getNearestCells(rundOpenCell, cellsList, columns, rows, "Wall");
 
-            let nearestDiagonalGroundCells = this.getNearestDiagonalCells(rundOpenCell, cellsList, columns, rows, "Grass1");
-
-            if (nearestWallCells.length > 2 && nearestDiagonalGroundCells.length < 2) {
+            let nearestWallCells = this.getNearestCells(rundOpenCell, cellsList, "Wall");
+            let nearestDiagonalGroundCells = this.getNearestDiagonalCells(rundOpenCell, cellsList, "Grass1");
+            if (nearestWallCells.length > 2 && nearestDiagonalGroundCells.length < 5) {
                 this.replaceCell(rundOpenCell, "Grass1", cellsList);
                 nearestWallCells.forEach(el => {
                     this.addCellInList(el, openCellsList);
@@ -64,29 +108,16 @@ export class MainWindow extends Phaser.Scene {
         return cellsList;
     }
 
-    mazeRenderer(cellsList) {
-        cellsList.forEach(cell => {
-            const conf = MazeRendererConfig.Cells;
-            const x = conf[cell.type].x + conf.with * cell.x;
-            const y = conf[cell.type].y + conf.height * cell.y;
-            const cellImg = this.make.image(conf[cell.type], true).setX(x).setY(y);
-        });
-    }
-
-    getNearestDiagonalCells(cell, cellsList, columns, rows, cellType) {
+    getNearestDiagonalCells(cell, cellsList, cellType) {
         let result = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
-                if ((x !== 0 && y !== 0)) {
+                if (x !== 0 && y !== 0) {
                     const newCell = {
                         x: cell.x + x,
                         y: cell.y + y,
                         type: cellType
                     }
-
-                    if (newCell.x < 0 || newCell.x >= columns
-                        || newCell.y < 0 || newCell.x >= rows)
-                        continue;
 
                     const oldCell = Enumerable.from(cellsList).singleOrDefault(x => JSON.stringify(x) == JSON.stringify(newCell));
 
@@ -98,7 +129,7 @@ export class MainWindow extends Phaser.Scene {
         return result;
     }
 
-    getNearestCells(cell, cellsList, columns, rows, cellType) {
+    getNearestCells(cell, cellsList, cellType) {
         let result = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
@@ -110,10 +141,6 @@ export class MainWindow extends Phaser.Scene {
                     y: cell.y + y,
                     type: cellType
                 }
-
-                if (newCell.x < 0 || newCell.x >= columns
-                    || newCell.y < 0 || newCell.x >= rows)
-                    continue;
 
                 const oldCell = Enumerable.from(cellsList).singleOrDefault(x => JSON.stringify(x) == JSON.stringify(newCell));
 
@@ -149,6 +176,26 @@ export class MainWindow extends Phaser.Scene {
                 return;
             }
         }
+    }
+
+    getNearestCellByXY(cell, cellsList, cellType, secondType) {
+        let nearestCells = this.getNearestCells(cell, cellsList, cellType);
+        let nearestNotTargetCells = this.getNearestCells(cell, cellsList, secondType);
+        while (nearestCells.length === 0) {
+            if (nearestNotTargetCells.length > 0) {
+                const rundIndex = Math.floor(Math.random() * nearestNotTargetCells.length);
+                const rundNotTargetCell = nearestNotTargetCells[rundIndex];
+                this.deleteCellFromList(rundNotTargetCell, nearestNotTargetCells);
+                nearestCells = this.getNearestCells(rundNotTargetCell, cellsList, cellType);
+            }
+            else {
+                return Enumerable.from(cellsList).first(x => x.type === cellType);
+            }
+        }
+
+        const rundIndex = Math.floor(Math.random() * nearestCells.length);
+        const rundTargetCell = nearestCells[rundIndex];
+        return rundTargetCell;
     }
 
     togglePageVisibility(bool) {
