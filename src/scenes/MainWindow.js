@@ -44,25 +44,22 @@ export class MainWindow extends Phaser.Scene {
             }
 
         openCellsList.push(firstCell);
-        this.replaceCell(firstCell, "Grass1", cellsList);
 
         while (openCellsList.length > 0) {
             const rundIndex = Math.floor(Math.random() * openCellsList.length);
             const rundOpenCell = openCellsList[rundIndex];
-            let nearestWallCells = this.getNearestWallCells(rundOpenCell, cellsList, columns, rows);
-            let nearestNotWallCells = this.getNearestNotWallCells(rundOpenCell, cellsList, columns, rows);
-            console.log();
-            if (nearestWallCells.length > 2 && nearestNotWallCells.length < 3) {
+            console.log(openCellsList.length);
+            this.deleteCellFromList(rundOpenCell, openCellsList);
+            let nearestWallCells = this.getNearestCells(rundOpenCell, cellsList, columns, rows, "Wall");
+
+            let nearestDiagonalGroundCells = this.getNearestDiagonalCells(rundOpenCell, cellsList, columns, rows, "Grass1");
+
+            if (nearestWallCells.length > 2 && nearestDiagonalGroundCells.length < 2) {
+                this.replaceCell(rundOpenCell, "Grass1", cellsList);
                 nearestWallCells.forEach(el => {
-                    openCellsList.push(el);
-                })
-                console.log(openCellsList);
-                const rundIndex = Math.floor(Math.random() * nearestWallCells.length);
-                const rundNearestCell = nearestWallCells[rundIndex];
-                const cell = this.replaceCell(rundNearestCell, "Grass1", cellsList);
+                    this.addCellInList(el, openCellsList);
+                });
             }
-            else
-                this.deleteCellFromList(rundOpenCell, openCellsList);
         }
         return cellsList;
     }
@@ -76,46 +73,42 @@ export class MainWindow extends Phaser.Scene {
         });
     }
 
-    getNearestNotWallCells(cell, cellsList, columns, rows) {
+    getNearestDiagonalCells(cell, cellsList, columns, rows, cellType) {
         let result = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
-                if ((x !== 0 && y !== 0) || x === 0 && y === 0)
-                    continue;
+                if ((x !== 0 && y !== 0)) {
+                    const newCell = {
+                        x: cell.x + x,
+                        y: cell.y + y,
+                        type: cellType
+                    }
 
-                const newCell = {
-                    x: cell.x + x,
-                    y: cell.y + y,
-                    type: "Wall"
+                    if (newCell.x < 0 || newCell.x >= columns
+                        || newCell.y < 0 || newCell.x >= rows)
+                        continue;
+
+                    const oldCell = Enumerable.from(cellsList).singleOrDefault(x => JSON.stringify(x) == JSON.stringify(newCell));
+
+                    if (oldCell)
+                        result.push(oldCell);
                 }
-
-                if (newCell.x < 0 || newCell.x >= columns
-                    || newCell.y < 0 || newCell.x >= rows)
-                    continue;
-
-                const oldCell = Enumerable.from(cellsList)
-                    .singleOrDefault(cell => cell.x === newCell.x
-                        && cell.y === newCell.y
-                        && cell.type !== newCell.type);
-
-                if (oldCell)
-                    result.push(oldCell);
             }
         }
         return result;
     }
 
-    getNearestWallCells(cell, cellsList, columns, rows) {
+    getNearestCells(cell, cellsList, columns, rows, cellType) {
         let result = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
-                if ((x !== 0 && y !== 0) || x === 0 && y === 0)
+                if ((x !== 0 && y !== 0) || (x === 0 && y === 0))
                     continue;
 
                 const newCell = {
                     x: cell.x + x,
                     y: cell.y + y,
-                    type: "Wall"
+                    type: cellType
                 }
 
                 if (newCell.x < 0 || newCell.x >= columns
@@ -138,6 +131,15 @@ export class MainWindow extends Phaser.Scene {
                 return cellsList[index];
             }
         }
+    }
+
+    addCellInList(cell, cellsList) {
+        for (let index = 0; index < cellsList.length; index++) {
+            if (cell.x === cellsList[index].x && cell.y === cellsList[index].y) {
+                return;
+            }
+        }
+        cellsList.push(cell);
     }
 
     deleteCellFromList(cell, cellsList) {
