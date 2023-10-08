@@ -176,8 +176,8 @@ export class MainWindow extends Phaser.Scene {
 
         let openCellsList = [];
 
-        const rundIndex = Math.floor(Math.random() * cellsList.length);
-        let firstCell = cellsList[rundIndex];
+        const randIndex = Math.floor(Math.random() * cellsList.length);
+        let firstCell = cellsList[randIndex];
 
         if (firstCell.x === 0 || firstCell.x === columns - 1
             || firstCell.y === 0 || firstCell.y === rows - 1)
@@ -190,14 +190,14 @@ export class MainWindow extends Phaser.Scene {
         openCellsList.push(firstCell);
 
         while (openCellsList.length > 0) {
-            const rundIndex = Math.floor(Math.random() * openCellsList.length);
-            const rundOpenCell = openCellsList[rundIndex];
-            this.deleteCellFromList(rundOpenCell, openCellsList);
+            const randIndex = Math.floor(Math.random() * openCellsList.length);
+            const randOpenCell = openCellsList[randIndex];
+            this.deleteCellFromList(randOpenCell, openCellsList);
 
-            let nearestWallCells = this.getNearestCells(rundOpenCell, cellsList, "Wall");
-            let nearestDiagonalGroundCells = this.getNearestDiagonalCells(rundOpenCell, cellsList, "Grass1");
+            let nearestWallCells = this.getNearestCells(randOpenCell, cellsList, "Wall");
+            let nearestDiagonalGroundCells = this.getNearestDiagonalCells(randOpenCell, cellsList, "Grass1");
             if (nearestWallCells.length > 2 && nearestDiagonalGroundCells.length < 5) {
-                this.replaceCell(rundOpenCell, "Grass1", cellsList);
+                this.replaceCell(randOpenCell, "Grass1", cellsList);
                 nearestWallCells.forEach(el => {
                     this.addCellInList(el, openCellsList);
                 });
@@ -281,19 +281,19 @@ export class MainWindow extends Phaser.Scene {
         let nearestNotTargetCells = this.getNearestCells(cell, cellsList, secondType);
         while (nearestCells.length === 0) {
             if (nearestNotTargetCells.length > 0) {
-                const rundIndex = Math.floor(Math.random() * nearestNotTargetCells.length);
-                const rundNotTargetCell = nearestNotTargetCells[rundIndex];
-                this.deleteCellFromList(rundNotTargetCell, nearestNotTargetCells);
-                nearestCells = this.getNearestCells(rundNotTargetCell, cellsList, cellType);
+                const randIndex = Math.floor(Math.random() * nearestNotTargetCells.length);
+                const randNotTargetCell = nearestNotTargetCells[randIndex];
+                this.deleteCellFromList(randNotTargetCell, nearestNotTargetCells);
+                nearestCells = this.getNearestCells(randNotTargetCell, cellsList, cellType);
             }
             else {
                 return Enumerable.from(cellsList).first(x => x.type === cellType);
             }
         }
 
-        const rundIndex = Math.floor(Math.random() * nearestCells.length);
-        const rundTargetCell = nearestCells[rundIndex];
-        return rundTargetCell;
+        const randIndex = Math.floor(Math.random() * nearestCells.length);
+        const randTargetCell = nearestCells[randIndex];
+        return randTargetCell;
     }
 
     togglePageVisibility(bool) {
